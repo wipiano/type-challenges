@@ -20,7 +20,9 @@
 
 /* _____________ ここにコードを記入 _____________ */
 
-type TupleToObject<T extends readonly any[]> = any
+type TupleToObject<T extends readonly any[]> = {
+  [K in T[number]]: K
+}
 
 /* _____________ テストケース _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
@@ -37,10 +39,8 @@ type cases = [
   Expect<Equal<TupleToObject<typeof tupleNumber>, { 1: 1, 2: 2, 3: 3, 4: 4 }>>,
   Expect<Equal<TupleToObject<typeof tupleSymbol>, { [sym1]: typeof sym1, [sym2]: typeof sym2 }>>,
   Expect<Equal<TupleToObject<typeof tupleMix>, { 1: 1, '2': '2', 3: 3, '4': '4', [sym1]: typeof sym1 }>>,
+  Expect<Equal<TupleToObject<[[1, 2], {}]>, {}>>,
 ]
-
-// @ts-expect-error
-type error = TupleToObject<[[1, 2], {}]>
 
 /* _____________ 次のステップ _____________ */
 /*

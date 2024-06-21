@@ -22,7 +22,12 @@
 
 /* _____________ ここにコードを記入 _____________ */
 
-type MyAwaited<T> = any
+type Thenable<T> = { then: (onfulfilled: (arg: T) => any) => any};
+
+type MyAwaited<T extends Thenable<any>> = 
+  T extends Thenable<infer R> 
+    ? (R extends Thenable<unknown> ? MyAwaited<R> : R)
+    : never;
 
 /* _____________ テストケース _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
@@ -40,6 +45,8 @@ type cases = [
   Expect<Equal<MyAwaited<Z1>, string | boolean>>,
   Expect<Equal<MyAwaited<T>, number>>,
 ]
+
+type z = MyAwaited<Z>
 
 /* _____________ 次のステップ _____________ */
 /*
